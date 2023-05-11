@@ -6,6 +6,7 @@ import lt.vu.bakalauras.model.*;
 import lt.vu.bakalauras.service.Classifier;
 import lt.vu.bakalauras.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -22,7 +23,7 @@ public class KeystrokeDataController {
     private final UserService userService;
 
     @PostMapping(path = "/register")
-    public boolean registerUser(@RequestBody UserRegistrationData userRegistrationData) {
+    public ResponseEntity<AuthenticationResponse> registerUser(@RequestBody UserRegistrationData userRegistrationData) {
         Map<String, TemplateData> templateForKeyPairs = calculateMeanAndStdDev(userRegistrationData.getFlightTimes());
         User user = new User();
         user.setEmail(userRegistrationData.getEmail());
@@ -31,15 +32,19 @@ public class KeystrokeDataController {
         user.setTemplateData(templateForKeyPairs);
 
         userService.saveOrUpdate(user);
-        return true;
+        return ResponseEntity.ok(AuthenticationResponse.builder()
+                .success(true)
+                .build());
     }
 
     @PostMapping("/login")
-    public boolean loginUser(@RequestBody UserLoginData userLoginData) {
+    public ResponseEntity<AuthenticationResponse> loginUser(@RequestBody UserLoginData userLoginData) {
         User user = userService.getAllUsers().stream()
                 .filter(user1 -> user1.getUsername().equals(userLoginData.getUsername()))
                 .toList().get(0);
         Map<String, TemplateData> templateForKeyPairs =  user.getTemplateData();
-        return Classifier.classify(userLoginData.getFlightTimes(), templateForKeyPairs);
+        return ResponseEntity.ok(AuthenticationResponse.builder()
+                .success(Classifier.classify(userLoginData.getFlightTimes(), templateForKeyPairs))
+                .build());
     }
 }
