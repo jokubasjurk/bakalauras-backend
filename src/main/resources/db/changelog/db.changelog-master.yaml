@@ -1,0 +1,147 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: jokubasj
+      changes:
+        - createTable:
+            tableName: Users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: inputType
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: TEMPLATEDATA
+                  type: clob
+                  constraints:
+                    nullable: true
+  - changeSet:
+      id: 2
+      author: jokubasj
+      changes:
+        - createTable:
+            tableName: ClassifierStatistics
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: classifierType
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: falsePositives
+                  type: int
+              - column:
+                  name: falseNegatives
+                  type: int
+              - column:
+                  name: truePositives
+                  type: int
+              - column:
+                  name: trueNegatives
+                  type: int
+              - column:
+                  name: falseAcceptanceRate
+                  type: double
+              - column:
+                  name: falseRejectionRate
+                  type: double
+              - column:
+                  name: equalErrorRate
+                  type: double
+              - column:
+                  name: accuracy
+                  type: double
+  - changeSet:
+      id: 3
+      author: jokubasj
+      changes:
+        - insert:
+            tableName: ClassifierStatistics
+            columns:
+              - column:
+                  name: classifierType
+                  value: "zscore"
+              - column:
+                  name: falsePositives
+                  valueNumeric: 0
+              - column:
+                  name: falseNegatives
+                  valueNumeric: 0
+              - column:
+                  name: truePositives
+                  valueNumeric: 0
+              - column:
+                  name: trueNegatives
+                  valueNumeric: 0
+              - column:
+                  name: falseAcceptanceRate
+                  valueNumeric: 0
+              - column:
+                  name: falseRejectionRate
+                  valueNumeric: 0
+              - column:
+                  name: equalErrorRate
+                  valueNumeric: 0
+              - column:
+                  name: accuracy
+                  valueNumeric: 0
+        - insert:
+            tableName: ClassifierStatistics
+            columns:
+              - column:
+                  name: classifierType
+                  value: "euclidean"
+              - column:
+                  name: falsePositives
+                  valueNumeric: 0
+              - column:
+                  name: falseNegatives
+                  valueNumeric: 0
+              - column:
+                  name: truePositives
+                  valueNumeric: 0
+              - column:
+                  name: trueNegatives
+                  valueNumeric: 0
+              - column:
+                  name: falseAcceptanceRate
+                  valueNumeric: 0
+              - column:
+                  name: falseRejectionRate
+                  valueNumeric: 0
+              - column:
+                  name: equalErrorRate
+                  valueNumeric: 0
+              - column:
+                  name: accuracy
+                  valueNumeric: 0

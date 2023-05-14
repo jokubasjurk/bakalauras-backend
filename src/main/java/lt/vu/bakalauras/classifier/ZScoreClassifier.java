@@ -1,16 +1,26 @@
-package lt.vu.bakalauras.service;
+package lt.vu.bakalauras.classifier;
 
 import lt.vu.bakalauras.model.FlightTime;
 import lt.vu.bakalauras.model.TemplateData;
+import lt.vu.bakalauras.service.ClassifierStatisticsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 
-public class Classifier {
+@Component
+public class ZScoreClassifier {
 
-    private static final double THRESHOLD = 0.5;
+    private final ClassifierStatisticsService classifierStatisticsService;
+    private static final String CLASSIFIER_TYPE = "zscore";
 
-    public static boolean classify(List<FlightTime> testSamples, Map<String, TemplateData> template) {
+    @Autowired
+    public ZScoreClassifier(ClassifierStatisticsService classifierStatisticsService) {
+        this.classifierStatisticsService = classifierStatisticsService;
+    }
+
+    public boolean classify(List<FlightTime> testSamples, Map<String, TemplateData> template, boolean isImpostor) {
         double dddSum = 0.0;
         double dduSum = 0.0;
         double dudSum = 0.0;
@@ -23,7 +33,7 @@ public class Classifier {
             TemplateData templateData = template.get(keyCode);
 
             if (templateData != null) {
-                double distance = templateData.getStdDev() != 0
+                double distance = templateData.getStdDev() > 1
                         ? (testFeature.getFlightTime() - templateData.getMean()) / templateData.getStdDev()
                         : 0;
 
@@ -49,11 +59,13 @@ public class Classifier {
         double dud = dudCount > 0 ? dudSum / dudCount : 0;
 
         // Define the thresholds for DD, DU, and UD features
-        double tdd = 0.5;
-        double tdu = 0.5;
-        double tud = 0.5;
+        double tdd = 5;
+        double tdu = 5;
+        double tud = 5;
 
         // Check if the condition is satisfied
+        boolean authenticationResult = ddd <= tdd && ddu <= tdu && dud <= tud;
+        classifierStatisticsService.calculateStatistics(CLASSIFIER_TYPE, authenticationResult, isImpostor);
         return ddd <= tdd && ddu <= tdu && dud <= tud;
     }
 

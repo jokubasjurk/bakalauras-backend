@@ -8,5 +8,6 @@ import java.util.List;
 public class UserLoginData {
     private String username;
     private String password;
+    private String inputType;
     private List<FlightTime> flightTimes;
 }

@@ -5,31 +5,29 @@ import lt.vu.bakalauras.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 public class UserService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    public List<User> getAllUsers() {
-        List<User> users = new ArrayList<User>();
-        userRepository.findAll().forEach(users::add);
-        return users;
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public User getUserById(int id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user id."));
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    public boolean isPasswordCorrect(String username, String password) {
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            return user.getPassword().equals(password);
+        }
+        return false;
     }
 
     public void saveOrUpdate(User user) {
         userRepository.save(user);
-    }
-
-    public void delete(int id) {
-        userRepository.deleteById(id);
     }
 }

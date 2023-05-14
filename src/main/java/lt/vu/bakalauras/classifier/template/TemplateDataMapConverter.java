@@ -1,4 +1,4 @@
-package lt.vu.bakalauras.service;
+package lt.vu.bakalauras.classifier.template;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

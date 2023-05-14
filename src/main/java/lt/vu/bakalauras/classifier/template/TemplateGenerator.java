@@ -1,4 +1,4 @@
-package lt.vu.bakalauras.service;
+package lt.vu.bakalauras.classifier.template;
 
 import lt.vu.bakalauras.model.FlightTime;
 import lt.vu.bakalauras.model.TemplateData;
@@ -48,7 +48,7 @@ public class TemplateGenerator {
         for (double value : values) {
             sum += Math.pow(value - mean, 2);
         }
-        return Math.sqrt(sum / values.size());
+        return Math.max(Math.sqrt(sum / values.size()), 0.000005d);
     }
 }
 
