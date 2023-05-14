@@ -28,6 +28,11 @@ jobs:
 
     - name: Build Spring Boot app
       run: mvn clean package -B
+      
+    - name: Change permissions of demo.trace.db on remote server
+      run: |
+        ssh -i private_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $DROPLET_USER@$DROPLET_IP "chmod 664 /data/demo.trace.db"
+      
 
     - name: Deploy to DigitalOcean Droplet
       env:
