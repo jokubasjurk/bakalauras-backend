@@ -26,12 +26,15 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
 
-    - name: Change permissions of demo.*.db locally
-      run: chmod 664 data/demo.*.db
+    - name: Build Spring Boot app without running tests
+      run: mvn clean package -DskipTests -B
 
-    - name: Build Spring Boot app
-      run: mvn clean package -B
-      
+    - name: Change permissions of demo.*.db files generated during build
+      run: find . -type f -name 'demo.*.db' -exec chmod 664 {} \;
+
+    - name: Run tests
+      run: mvn test -B
+
     - name: Deploy to DigitalOcean Droplet
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
