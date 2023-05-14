@@ -1,0 +1,36 @@
+name: Deploy to DigitalOcean Droplet
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Cache Maven packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+
+    - name: Build Spring Boot app
+      run: mvn clean package -B
+
+    - name: Deploy to DigitalOcean Droplet
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        DROPLET_IP: ${{ secrets.DROPLET_IP }}
+        DROPLET_USER: ${{ secrets.DROPLET_USER }}
+      run: |
+        echo "$SSH_PRIVATE_KEY" > private_key
+        chmod 600 private_key
+        scp -i private_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null target/*.jar $DROPLET_USER@$DROPLET_IP:/tmp/app.jar
+        ssh -i private_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $DROPLET_USER@$DROPLET_IP "sudo systemctl stop myapp && sudo mv /tmp/app.jar /var/myapp/app.jar && sudo systemctl start myapp"
+        rm -f private_key
