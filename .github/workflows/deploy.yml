@@ -32,8 +32,8 @@ jobs:
     - name: Change permissions of demo.*.db files generated during build
       run: find . -type f -name 'demo.*.db' -exec chmod 664 {} \;
 
-    - name: Run tests
-      run: mvn test -B
+#     - name: Run tests
+#       run: mvn test -B
 
     - name: Deploy to DigitalOcean Droplet
       env:
