@@ -26,11 +26,8 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
 
-    - name: Change permissions of demo.*.db on remote server
-      run: |
-        echo "$SSH_PRIVATE_KEY" > private_key
-        chmod 600 private_key
-        ssh -i private_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $DROPLET_USER@$DROPLET_IP "chmod 664 /data/demo.*.db"
+    - name: Change permissions of demo.*.db locally
+      run: chmod 664 data/demo.*.db
 
     - name: Build Spring Boot app
       run: mvn clean package -B
