@@ -28,6 +28,8 @@ jobs:
 
     - name: Change permissions of demo.*.db on remote server
       run: |
+        echo "$SSH_PRIVATE_KEY" > private_key
+        chmod 600 private_key
         ssh -i private_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $DROPLET_USER@$DROPLET_IP "chmod 664 /data/demo.*.db"
 
     - name: Build Spring Boot app
