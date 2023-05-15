@@ -67,14 +67,12 @@ public class ZScoreClassifier {
         double tdu = 1;
         double tud = 1;
 
-        // Check if the condition is satisfied
-        // boolean authenticationResult = ddd <= tdd && ddu <= tdu && dud <= tud;
         boolean authenticationResult = Range.between(-tdd, tdd).contains(ddd)
                 && Range.between(-tdu, tdu).contains(ddu)
                 && Range.between(-tud, tud).contains(dud);
-        logger.info(String.format("ddd: %s, ddu: %s, dud: %s", ddd, ddu, dud));
+        logger.info(String.format("\nddd: %s,\nddu: %s,\ndud: %s", ddd, ddu, dud));
         classifierStatisticsService.calculateStatistics(CLASSIFIER_TYPE, authenticationResult, isImpostor);
-        return ddd <= tdd && ddu <= tdu && dud <= tud;
+        return authenticationResult;
     }
 
 }

@@ -150,7 +150,7 @@ public class EuclideanClassifier {
 
     logger.info(
         String.format(
-            "euclideanDistance: %s, probabilityScore: %s, weightedProbabilityScore: %s",
+            "\neuclideanDistance: %s,\nprobabilityScore: %s,\nweightedProbabilityScore: %s",
             euclideanDistance, probabilityScore, weightedProbabilityScore));
 
     return authenticationResult;
