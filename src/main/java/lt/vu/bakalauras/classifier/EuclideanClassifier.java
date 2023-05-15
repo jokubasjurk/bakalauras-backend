@@ -13,9 +13,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class EuclideanClassifier {
 
-  private static final double EUCLIDEAN_DISTANCE_THRESHOLD = 350d;
+  private static final double EUCLIDEAN_DISTANCE_THRESHOLD = 600d;
   private static final double PROBABILITY_THRESHOLD = 0.7d;
   private static final double WEIGHTED_PROBABILITY_THRESHOLD = 0.6d;
+  private static final double UPPER_PROBABILITY_THRESHOLD = 0.9d;
+  private static final double UPPER_WEIGHTED_PROBABILITY_THRESHOLD = 0.8d;
   private static final Map<String, Double> FEATURE_WEIGHTS =
       Map.ofEntries(
           Map.entry("th", 1.0),
@@ -141,9 +143,12 @@ public class EuclideanClassifier {
 
     // Check if all scores are above their respective thresholds for authentication
     boolean authenticationResult =
-        euclideanDistance <= EUCLIDEAN_DISTANCE_THRESHOLD
-            && probabilityScore >= PROBABILITY_THRESHOLD
-            && weightedProbabilityScore >= WEIGHTED_PROBABILITY_THRESHOLD;
+        (euclideanDistance <= EUCLIDEAN_DISTANCE_THRESHOLD
+                && probabilityScore >= PROBABILITY_THRESHOLD
+                && weightedProbabilityScore >= WEIGHTED_PROBABILITY_THRESHOLD)
+            || (euclideanDistance - EUCLIDEAN_DISTANCE_THRESHOLD <= EUCLIDEAN_DISTANCE_THRESHOLD
+                && probabilityScore >= UPPER_PROBABILITY_THRESHOLD
+                && weightedProbabilityScore >= UPPER_WEIGHTED_PROBABILITY_THRESHOLD);
 
     classifierStatisticsService.calculateStatistics(
         CLASSIFIER_TYPE, authenticationResult, isImpostor);
