@@ -68,7 +68,7 @@ public class KeystrokeDataController {
                 Map.of(
                     "euclidean", isAuthenticatedByEuclideanClassifier,
                     "Z-score", isAuthenticatedByZScoreClassifier))
-            .success(isAuthenticatedByEuclideanClassifier && isAuthenticatedByZScoreClassifier)
+            .success(isAuthenticatedByEuclideanClassifier || isAuthenticatedByZScoreClassifier)
             .build());
   }
 
