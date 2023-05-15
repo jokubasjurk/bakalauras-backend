@@ -59,9 +59,9 @@ public class ZScoreClassifier {
         double dud = dudCount > 0 ? dudSum / dudCount : 0;
 
         // Define the thresholds for DD, DU, and UD features
-        double tdd = 5;
-        double tdu = 5;
-        double tud = 5;
+        double tdd = 2;
+        double tdu = 2;
+        double tud = 2;
 
         // Check if the condition is satisfied
         boolean authenticationResult = ddd <= tdd && ddu <= tdu && dud <= tud;
