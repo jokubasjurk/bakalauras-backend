@@ -5,6 +5,8 @@ import java.util.Map;
 import lt.vu.bakalauras.model.FlightTime;
 import lt.vu.bakalauras.model.TemplateData;
 import lt.vu.bakalauras.service.ClassifierStatisticsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -47,6 +49,7 @@ public class EuclideanClassifier {
           Map.entry("do", 0.8),
           Map.entry("og", 0.4));
   private static final String CLASSIFIER_TYPE = "euclidean";
+  private static final Logger logger = LoggerFactory.getLogger(EuclideanClassifier.class);
   private final ClassifierStatisticsService classifierStatisticsService;
 
   @Autowired
@@ -144,6 +147,11 @@ public class EuclideanClassifier {
 
     classifierStatisticsService.calculateStatistics(
         CLASSIFIER_TYPE, authenticationResult, isImpostor);
+
+    logger.info(
+        String.format(
+            "euclideanDistance: %s, probabilityScore: %s, weightedProbabilityScore: %s",
+            euclideanDistance, probabilityScore, weightedProbabilityScore));
 
     return authenticationResult;
   }

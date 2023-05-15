@@ -3,6 +3,8 @@ package lt.vu.bakalauras.classifier;
 import lt.vu.bakalauras.model.FlightTime;
 import lt.vu.bakalauras.model.TemplateData;
 import lt.vu.bakalauras.service.ClassifierStatisticsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,7 @@ public class ZScoreClassifier {
 
     private final ClassifierStatisticsService classifierStatisticsService;
     private static final String CLASSIFIER_TYPE = "zscore";
+    private static final Logger logger = LoggerFactory.getLogger(ZScoreClassifier.class);
 
     @Autowired
     public ZScoreClassifier(ClassifierStatisticsService classifierStatisticsService) {
@@ -59,12 +62,13 @@ public class ZScoreClassifier {
         double dud = dudCount > 0 ? dudSum / dudCount : 0;
 
         // Define the thresholds for DD, DU, and UD features
-        double tdd = 2;
-        double tdu = 2;
-        double tud = 2;
+        double tdd = 1;
+        double tdu = 1;
+        double tud = 1;
 
         // Check if the condition is satisfied
         boolean authenticationResult = ddd <= tdd && ddu <= tdu && dud <= tud;
+        logger.info(String.format("ddd: %s, ddu: %s, dud: %s", ddd, ddu, dud));
         classifierStatisticsService.calculateStatistics(CLASSIFIER_TYPE, authenticationResult, isImpostor);
         return ddd <= tdd && ddu <= tdu && dud <= tud;
     }
