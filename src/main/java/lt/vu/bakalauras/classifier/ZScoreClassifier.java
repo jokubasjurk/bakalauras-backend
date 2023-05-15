@@ -3,6 +3,7 @@ package lt.vu.bakalauras.classifier;
 import lt.vu.bakalauras.model.FlightTime;
 import lt.vu.bakalauras.model.TemplateData;
 import lt.vu.bakalauras.service.ClassifierStatisticsService;
+import org.apache.commons.lang3.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,9 @@ import java.util.Map;
 @Component
 public class ZScoreClassifier {
 
-    private final ClassifierStatisticsService classifierStatisticsService;
     private static final String CLASSIFIER_TYPE = "zscore";
     private static final Logger logger = LoggerFactory.getLogger(ZScoreClassifier.class);
+    private final ClassifierStatisticsService classifierStatisticsService;
 
     @Autowired
     public ZScoreClassifier(ClassifierStatisticsService classifierStatisticsService) {
@@ -67,7 +68,10 @@ public class ZScoreClassifier {
         double tud = 1;
 
         // Check if the condition is satisfied
-        boolean authenticationResult = ddd <= tdd && ddu <= tdu && dud <= tud;
+        // boolean authenticationResult = ddd <= tdd && ddu <= tdu && dud <= tud;
+        boolean authenticationResult = Range.between(-tdd, tdd).contains(ddd)
+                && Range.between(-tdu, tdu).contains(ddu)
+                && Range.between(-tud, tud).contains(dud);
         logger.info(String.format("ddd: %s, ddu: %s, dud: %s", ddd, ddu, dud));
         classifierStatisticsService.calculateStatistics(CLASSIFIER_TYPE, authenticationResult, isImpostor);
         return ddd <= tdd && ddu <= tdu && dud <= tud;
